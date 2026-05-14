@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Expense & Budget Visualizer</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="app-wrapper">
+    <header class="app-header">
+      <h1>💰 Expense & Budget Visualizer</h1>
+    </header>
+
+    <!-- ① Spending Limit Alert -->
+    <section class="budget-limit-bar" aria-label="Budget Limit">
+      <div class="budget-limit-row">
+        <label for="budgetLimitInput">🎯 Budget Limit (Rp)</label>
+        <div class="budget-limit-input-wrap">
+          <input
+            type="number"
+            id="budgetLimitInput"
+            placeholder="Contoh: 500000"
+            min="0"
+            aria-label="Set budget limit"
+          />
+          <button id="saveLimitBtn" class="btn-outline">Simpan</button>
+        </div>
+      </div>
+      <!-- Alert muncul di sini -->
+      <div class="budget-alert" id="budgetAlert" role="alert" aria-live="polite" hidden>
+        ⚠️ Anda melebihi budget! Pengeluaran sudah melampaui limit yang ditetapkan.
+      </div>
+    </section>
+
+    <!-- Total Balance -->
+    <section class="balance-card" aria-label="Total Balance">
+      <p class="balance-label">Total Pengeluaran</p>
+      <p class="balance-amount" id="totalBalance">Rp 0</p>
+      <p class="balance-limit" id="balanceLimit"></p>
+    </section>
+
+    <main class="main-content">
+      <!-- Left Column: Form + Custom Category + Transaction List -->
+      <div class="left-column">
+
+        <!-- Input Form -->
+        <section class="card form-card" aria-label="Tambah Transaksi">
+          <h2>Tambah Transaksi</h2>
+          <form id="transactionForm" novalidate>
+            <div class="form-group">
+              <label for="itemName">Nama Item</label>
+              <input
+                type="text"
+                id="itemName"
+                placeholder="Contoh: Makan siang"
+                autocomplete="off"
+                aria-required="true"
+              />
+              <span class="error-msg" id="itemNameError"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="amount">Jumlah (Rp)</label>
+              <input
+                type="number"
+                id="amount"
+                placeholder="Contoh: 25000"
+                min="1"
+                aria-required="true"
+              />
+              <span class="error-msg" id="amountError"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="category">Kategori</label>
+              <select id="category" aria-required="true">
+                <option value="">-- Pilih Kategori --</option>
+                <option value="Food">🍔 Food</option>
+                <option value="Transport">🚗 Transport</option>
+                <option value="Fun">🎉 Fun</option>
+              </select>
+              <span class="error-msg" id="categoryError"></span>
+            </div>
+
+            <button type="submit" class="btn-primary" id="addBtn">
+              + Add Transaction
+            </button>
+          </form>
+
+          <!-- ② Custom Categories -->
+          <div class="custom-category-section">
+            <h3>Tambah Kategori Baru</h3>
+            <div class="custom-category-row">
+              <input
+                type="text"
+                id="newCategoryInput"
+                placeholder="Nama kategori baru…"
+                maxlength="30"
+                aria-label="Nama kategori baru"
+              />
+              <button id="addCategoryBtn" class="btn-outline">+ Add Category</button>
+            </div>
+            <span class="error-msg" id="categoryAddError"></span>
+            <!-- Daftar kategori custom (bisa dihapus) -->
+            <div class="custom-category-tags" id="customCategoryTags"></div>
+          </div>
+        </section>
+
+        <!-- Transaction List -->
+        <section class="card list-card" aria-label="Daftar Transaksi">
+          <div class="list-header">
+            <h2>Daftar Transaksi</h2>
+            <!-- ③ Monthly Summary Button -->
+            <button id="monthlySummaryBtn" class="btn-outline btn-sm">📅 Monthly Summary</button>
+          </div>
+          <div class="transaction-list" id="transactionList" role="list">
+            <p class="empty-state" id="emptyState">Belum ada transaksi. Tambahkan yang pertama!</p>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- Right Column: Pie Chart -->
+      <div class="right-column">
+        <section class="card chart-card" aria-label="Grafik Pengeluaran">
+          <h2>Pengeluaran per Kategori</h2>
+          <div class="chart-container">
+            <canvas id="expenseChart" aria-label="Pie chart pengeluaran per kategori" role="img"></canvas>
+          </div>
+          <p class="chart-empty" id="chartEmpty">Tambahkan transaksi untuk melihat grafik.</p>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- ③ Monthly Summary Modal -->
+  <div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle" hidden>
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="modalTitle">📅 Monthly Summary</h2>
+        <button class="modal-close" id="modalClose" aria-label="Tutup modal">✕</button>
+      </div>
+      <div class="modal-body" id="modalBody">
+        <!-- Diisi oleh JS -->
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
